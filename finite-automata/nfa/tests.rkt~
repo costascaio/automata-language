@@ -22,6 +22,6 @@
 
 ; (renaming (reachable foo))
 
-;(dfa->pict (renaming foo))
+(dfa->pict (renaming foo))
 
-(nfa->pict M)
+; (nfa->pict M)

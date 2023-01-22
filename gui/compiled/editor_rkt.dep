@@ -1,0 +1,1 @@
+("8.7" ta6le ("de479f520b783b29dcd691fd2ab67b259d120bb6" . "7f94c53427daf56ac94cd86c38168b9d5ebe460b") (collects #"racket" #"gui" #"lang" #"reader.rkt") (collects #"racket" #"gui.rkt") (collects #"racket" #"runtime-config.rkt"))
