@@ -8,9 +8,9 @@
 ;"subset-construction.rkt"
 
 (define M
-  (dfa A (B) (A : 0 -> B)
-             (B : 1 -> B)
-             (B : 0 -> B)))
+  (dfa s1 (s2) (s1 : 0 -> s2)
+             (s2 : 1 -> s2)
+             (s2 : 0 -> s2)))
 
 
 (define N
@@ -40,11 +40,12 @@
   (filter (lambda (s) (= (string-length s) 2)) combination-raw)
   )
 
-; convert a list os symbols to string
+; convert a list of symbols to string
 (define (convert-symbol-string list-symbols)
   (apply string-append
          (map symbol->string list-symbols)))
 
+; convert a list of string to symbol
 (define (convert-string-symbol list-string)
   (map string->symbol list-string))
 
@@ -57,3 +58,24 @@
   (convert-string-symbol states-combination))
 
 (list-states M N)
+;;; (dfa-delta M)
+
+;;; (define (concat-states states1 states2)
+  
+;;;   )
+
+; generate a list of all transitions that starts with a state
+(define (find-state-transitions state list-delta)
+    (filter (lambda (transition)
+           (eq? state (car (car transition)))) list-delta))
+
+(find-state-transitions (dfa-start M) (dfa-delta M))
+(find-state-transitions (dfa-start N) (dfa-delta N))
+
+(define transition-start-dfa1 (find-state-transitions (dfa-start M) (dfa-delta M)))
+(define transition-start-dfa2 (find-state-transitions (dfa-start N) (dfa-delta N)))
+
+(list? transition-start-dfa1)
+
+(cdr (car (first transition-start-dfa1)))
+
