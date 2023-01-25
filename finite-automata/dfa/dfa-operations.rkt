@@ -71,7 +71,7 @@
 (find-state-transitions (dfa-start M) (dfa-delta M))
 (find-state-transitions (dfa-start N) (dfa-delta N))
 
-; generate a product of n transitions from different fa
+; generate a product of n transitions from different fa considering two differnt states
 (define (product-transitions list-delta1 list-delta2 state1 state2 symb)
   (define s1 (find-state-transitions state1 list-delta1))
   (define s2 (find-state-transitions state2 list-delta2))
