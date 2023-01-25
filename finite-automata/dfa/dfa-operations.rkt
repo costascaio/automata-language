@@ -46,9 +46,9 @@
 (define (combination-states states1 states2)
   (define str-states1 (convert-symbol-string states1))
   (define str-states2 (convert-symbol-string states2))
-  (apply append (map (lambda (a) 
-    (map (lambda (b) 
-      (string-append a b)) str-states1)) str-states2)))
+  (apply append (map (lambda (s1) 
+    (map (lambda (s2)
+      (string-append s1 s2)) str-states2)) str-states1)))
 
 ; generate a list with the combination of states from two dfa
 (define (list-states dfa1 dfa2)
@@ -57,15 +57,40 @@
       (dfa-states dfa1) (dfa-states dfa2)))
   (convert-string-symbol states-combination))
 
-(list-states M N)
-;;; (dfa-delta M)
-
-;;; (define (concat-states states1 states2)
-  
-;;;   )
 
 ; generate a list of all transitions that starts with a state
 (define (find-state-transitions state list-delta)
     (filter (lambda (transition)
            (eq? state (car (car transition)))) list-delta))
 
+; generate a list of all transitions that has a espected symbol
+(define (find-symbol-transitions symb list-delta)
+    (filter (lambda (transition)
+           (eq? symb (cdr (car transition)))) list-delta))
+
+(define s1 (find-state-transitions (dfa-start M) (dfa-delta M)))
+(define s2 (find-state-transitions (dfa-start N) (dfa-delta N)))
+(find-state-transitions (dfa-start M) (dfa-delta M))
+(find-state-transitions (dfa-start N) (dfa-delta N))
+
+; generate a product of n transitions from different fa
+(define (product-transitions transitions1 transitions2 symb)
+  (define t1 (find-symbol-transitions symb transitions1))
+  (define t2 (find-symbol-transitions symb transitions2))
+  (apply append (map (lambda (s1)
+    (map (lambda (s2)
+      (product-transition s1 s2 symb)) t2)) t1)))
+
+; generate a product of two transitions of a symbol
+(define (product-transition transition1 transition2 symb)
+  (define origin-state 
+    (string->symbol (string-append 
+      (symbol->string (car (car transition1)))
+      (symbol->string (car (car transition2))))))
+  (define destiny-state 
+    (string->symbol (string-append 
+      (symbol->string (cdr transition1))
+      (symbol->string (cdr transition2)))))
+  (cons (cons origin-state symb) destiny-state))
+
+(product-transitions s1 s2 (first (dfa-sigma M)))
