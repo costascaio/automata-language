@@ -68,15 +68,15 @@
     (filter (lambda (transition)
            (eq? symb (cdr (car transition)))) list-delta))
 
-(define s1 (find-state-transitions (dfa-start M) (dfa-delta M)))
-(define s2 (find-state-transitions (dfa-start N) (dfa-delta N)))
 (find-state-transitions (dfa-start M) (dfa-delta M))
 (find-state-transitions (dfa-start N) (dfa-delta N))
 
 ; generate a product of n transitions from different fa
-(define (product-transitions transitions1 transitions2 symb)
-  (define t1 (find-symbol-transitions symb transitions1))
-  (define t2 (find-symbol-transitions symb transitions2))
+(define (product-transitions list-delta1 list-delta2 state1 state2 symb)
+  (define s1 (find-state-transitions state1 list-delta1))
+  (define s2 (find-state-transitions state2 list-delta2))
+  (define t1 (find-symbol-transitions symb s1))
+  (define t2 (find-symbol-transitions symb s2))
   (apply append (map (lambda (s1)
     (map (lambda (s2)
       (product-transition s1 s2 symb)) t2)) t1)))
@@ -93,4 +93,4 @@
       (symbol->string (cdr transition2)))))
   (cons (cons origin-state symb) destiny-state))
 
-(product-transitions s1 s2 (first (dfa-sigma M)))
+(product-transitions (dfa-delta M) (dfa-delta N) (dfa-start M) (dfa-start N) (first (dfa-sigma M)))
