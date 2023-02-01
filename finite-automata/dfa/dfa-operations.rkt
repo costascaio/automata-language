@@ -5,7 +5,8 @@
          "../fa.rkt"
          "image-builder.rkt")
 
-(provide mk-union-dfa mk-intersection-dfa)
+(provide mk-union-dfa 
+         mk-intersection-dfa)
 
 (define M
   (dfa A (B) (A : 0 -> B)
@@ -24,8 +25,8 @@
 ; generate a list with the initial states of dfa
 (define (product-start dfa1 dfa2)
   (first (convert-string-symbol (combination-states
-                          (list (dfa-start dfa1))
-                          (list (dfa-start dfa2))))))
+                                 (list (dfa-start dfa1))
+                                 (list (dfa-start dfa2))))))
 
 ; convert a list of symbols to string
 (define (convert-symbol-string list-symbols)
@@ -117,25 +118,52 @@
                       (map (lambda (state)
                              (find-union-states list-states state)) final-states))))
 
+; auxiliar function to indicate if a value is member of a list returning a boolean
+(define (member? arg lst)
+  (if (member arg lst) #t #f))
+
+; generate the list of states that are reachable from the start state
+(define (reachable-states transitions states)
+  (define reachable-states  
+    (append states (filter symbol?
+                    (append 
+                      (map (lambda (t)
+                        (if (member? (car (car t)) states)
+                          (cdr t)
+                          #f))
+                      transitions)))))
+  
+  (if (equal? 
+        (remove-duplicates reachable-states) 
+        (remove-duplicates states))
+      (remove-duplicates states)
+      (reachable-states transitions 
+        (filter symbol? reachable-states))))
+
+
+; generate the list of transitions that are reachable from start state
+(define (reachable-trasitions states transitions)
+  (filter (lambda (t)
+        (member? (car (car t)) states)) transitions))
+
 ; generate a intersection of two dfas
 (define (mk-intersection-dfa dfa1 dfa2)
-  (define states (product-states dfa1 dfa2))
   (define start (product-start dfa1 dfa2))
   (define sigma (dfa-sigma dfa1))
   (define final (dfa-intersection-states dfa1 dfa2))
-  (define delta (dfa-product dfa1 dfa2))
+  (define aux-delta (dfa-product dfa1 dfa2))
+  (define states 
+    (reachable-states aux-delta (list start)))
+  (define delta (reachable-trasitions states aux-delta))
   (mk-dfa states sigma delta start final))
 
 ; generate a intersection of two dfas
 (define (mk-union-dfa dfa1 dfa2)
-  (define states (product-states dfa1 dfa2))
   (define start (product-start dfa1 dfa2))
   (define sigma (dfa-sigma dfa1))
   (define final (dfa-union-states dfa1 dfa2))
-  (define delta (dfa-product dfa1 dfa2))
+  (define aux-delta (dfa-product dfa1 dfa2))
+  (define states 
+    (reachable-states aux-delta (list start)))
+  (define delta (reachable-trasitions states aux-delta))
   (mk-dfa states sigma delta start final))
-
-
-(define intersection (mk-intersection-dfa M N))
-(define union (mk-union-dfa M N))
-(dfa->pict union)
