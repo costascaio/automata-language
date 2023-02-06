@@ -10,8 +10,19 @@
          "core.rkt"
          "../../utils/set-extras.rkt")
 
-;; generating the initial partition
 
+; revert a single transition
+(define (revert-transition transition)
+  (define origin (car (car transition)))
+  (define destiny (cdr transition))
+  (define symb (cdr (car transition)))
+  (cons (cons destiny symb) origin))
+
+(define (revert-delta delta)
+  (map (lambda (transition)
+                (revert-transition transition)) delta))
+
+;; generating the initial partition
 (define (init-partition m)
   (define final (dfa-final m))
   (define states (dfa-states m))
