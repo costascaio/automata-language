@@ -4,8 +4,7 @@
 ;; algorithm using a fixpoint computation
 
 (provide refinement-table
-         minimize
-         minimization)
+         minimize)
 
 (require "../fa.rkt"
          "core.rkt"
@@ -14,6 +13,27 @@
          "image-builder.rkt"
          "../../utils/set-extras.rkt"
          "../nfa/core.rkt")
+
+(define M
+  (dfa A (B) (A : 0 -> B)
+       (B : 1 -> B)
+       (B : 0 -> B)))
+
+(define N
+  (dfa C (D) (C : 0 -> C)
+       (C : 1 -> D)
+       (D : 0 -> C)
+       (D : 1 -> D)))
+
+(define T
+  (dfa A (B C) (A : 0 -> C)
+       (A : 1 -> B)
+       (B : 0 -> D)
+       (B : 1 -> A)
+       (C : 0 -> A)
+       (C : 1 -> D)
+       (D : 0 -> B)
+       (D : 1 -> C)))
 
 ;; revert a single transition
 (define (revert-transition transition)
@@ -49,6 +69,11 @@
 (define (minimization fa)
   (define step1 (convert-nfa-dfa (revert-dfa fa)))
   (convert-nfa-dfa (revert-dfa step1)))
+
+;(nfa->pict (revert-dfa T))
+;(dfa->pict (convert-nfa-dfa (revert-dfa T)))
+(dfa->pict T)
+(dfa->pict (minimization T))
 
 ;; generating the initial partition
 (define (init-partition m)
