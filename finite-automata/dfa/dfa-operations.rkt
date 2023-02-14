@@ -6,7 +6,8 @@
          "image-builder.rkt")
 
 (provide mk-union-dfa 
-         mk-intersection-dfa)
+         mk-intersection-dfa
+         complement)
 
 (define M
   (dfa A (B) (A : 0 -> B)
@@ -167,3 +168,22 @@
     (reachable-states aux-delta (list start)))
   (define delta (reachable-trasitions states aux-delta))
   (mk-dfa states sigma delta start final))
+
+
+(define (complement dfa)
+  (define new-final (remq* (dfa-final dfa) (dfa-states dfa)))
+  (mk-dfa (dfa-states dfa)
+          (dfa-sigma dfa)
+          (dfa-delta dfa)
+          (dfa-start dfa)
+          new-final))
+
+(define T
+  (dfa A (B C) (A : 0 -> C)
+       (A : 1 -> B)
+       (B : 0 -> D)
+       (B : 1 -> A)
+       (C : 1 -> D)
+       (C : 0 -> A)
+       (D : 0 -> B)
+       (D : 1 -> C)))
