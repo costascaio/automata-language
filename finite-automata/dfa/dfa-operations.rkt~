@@ -3,8 +3,7 @@
 (require "core.rkt"
          "../dfa/image-builder.rkt"
          "../fa.rkt"
-         "image-builder.rkt"
-         "table-minimization.rkt")
+         "image-builder.rkt")
 
 (provide mk-union-dfa 
          mk-intersection-dfa
@@ -124,14 +123,9 @@
 (define (member? arg lst)
   (if (member arg lst) #t #f))
 
-
-; generate the list of transitions that are reachable from start state
-(define (reachable-transitions states transitions)
-  (filter (lambda (t)
-        (member? (car (car t)) states)) transitions))
-
+; generate the list of states that are reachable from the start state
 (define (reachable-states transitions states)
-  (define reachable-states-variable  
+  (define reachable-states  
     (append states (filter symbol?
                     (append 
                       (map (lambda (t)
@@ -141,12 +135,17 @@
                       transitions)))))
   
   (if (equal? 
-        (remove-duplicates reachable-states-variable) 
+        (remove-duplicates reachable-states) 
         (remove-duplicates states))
       (remove-duplicates states)
       (reachable-states transitions 
-        (filter symbol? reachable-states-variable))))
+        (filter symbol? reachable-states))))
 
+
+; generate the list of transitions that are reachable from start state
+(define (reachable-trasitions states transitions)
+  (filter (lambda (t)
+        (member? (car (car t)) states)) transitions))
 
 ; generate a intersection of two dfas
 (define (mk-intersection-dfa dfa1 dfa2)
@@ -156,7 +155,7 @@
   (define aux-delta (dfa-product dfa1 dfa2))
   (define states 
     (reachable-states aux-delta (list start)))
-  (define delta (reachable-transitions states aux-delta))
+  (define delta (reachable-trasitions states aux-delta))
   (mk-dfa states sigma delta start final))
 
 ; generate a intersection of two dfas
@@ -167,7 +166,7 @@
   (define aux-delta (dfa-product dfa1 dfa2))
   (define states 
     (reachable-states aux-delta (list start)))
-  (define delta (reachable-transitions states aux-delta))
+  (define delta (reachable-trasitions states aux-delta))
   (mk-dfa states sigma delta start final))
 
 
@@ -188,39 +187,3 @@
        (C : 0 -> A)
        (D : 0 -> B)
        (D : 1 -> C)))
-
-(define A
-  (dfa C (C E)
-       (C : 0 -> D)
-       (C : 1 -> C)
-       (D : 0 -> E)
-       (D : 1 -> D)
-       (E : 1 -> E)
-       (E : 0 -> D)))
-
-
-(define G
-  (dfa A (A)
-       (A : 1 -> A)
-       (A : 0 -> B)
-       (B : 0 -> A)
-       (B : 1 -> B)))
-
-(define R (mk-intersection-dfa G (complement A)))
-
-
-
-(define P
-  (dfa p1 (p4)
-       (p1 : 0 -> p2)
-       (p1 : 1 -> p1)
-       (p2 : 0 -> p3)
-       (p2 : 1 -> p2)
-       (p3 : 1 -> p3)
-       (p3 : 0 -> p4)
-       (p4 : 1 -> p4)
-       (p4 : 0 -> p3)))
-
-(dfa->pict R)
-
-(dfa->pict (minimize P))

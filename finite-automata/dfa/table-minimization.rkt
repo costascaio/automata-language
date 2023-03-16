@@ -175,4 +175,15 @@
           start
           finals))
 
-(dfa->pict (minimize T))
+(define T
+  (dfa A (B C) (A : 0 -> C)
+       (A : 1 -> B)
+       (B : 0 -> D)
+       (B : 1 -> A)
+       (C : 1 -> D)
+       (C : 0 -> A)
+       (D : 0 -> B)
+       (D : 1 -> C)))
+
+
+(convert-nfa-dfa (revert-dfa T))
