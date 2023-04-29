@@ -11,16 +11,21 @@
          complement)
 
 (define M
-  (dfa A (B) (A : 0 -> B)
+  (dfa A (B)
+       (A : 0 -> B)
        (B : 1 -> B)
        (B : 0 -> B)))
 
 
+
 (define N
-  (dfa C (D) (C : 0 -> C)
+  (dfa C (D)
+       (C : 0 -> C)
        (C : 1 -> D)
        (D : 0 -> C)
        (D : 1 -> D)))
+
+(dfa->pict N)
 
 ;(dfa->pict N)
 
@@ -206,10 +211,6 @@
        (B : 0 -> A)
        (B : 1 -> B)))
 
-(define R (mk-intersection-dfa G (complement A)))
-
-
-
 (define P
   (dfa p1 (p4)
        (p1 : 0 -> p2)
@@ -220,7 +221,3 @@
        (p3 : 0 -> p4)
        (p4 : 1 -> p4)
        (p4 : 0 -> p3)))
-
-(dfa->pict R)
-
-(dfa->pict (minimize P))
