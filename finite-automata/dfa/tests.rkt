@@ -19,3 +19,4 @@
 
 (dfa->pict T)
 (dfa->pict (minimize T))
+(dfa->pict (minimization T))
