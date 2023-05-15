@@ -35,7 +35,7 @@
     (revert-delta
      (remove-duplicates (dfa-delta dfa)))
     (dfa-final dfa)
-    (dfa-start dfa)))
+    (list (dfa-start dfa))))
 
 ;; convert a nfa to a dfa
 (define (convert-nfa-dfa nfa)
@@ -184,6 +184,3 @@
        (C : 0 -> A)
        (D : 0 -> B)
        (D : 1 -> C)))
-
-
-(convert-nfa-dfa (revert-dfa T))
