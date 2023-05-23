@@ -5,7 +5,8 @@
 
 (provide refinement-table
          minimize
-         minimization)
+         minimization
+         revert-delta)
 
 (require "../fa.rkt"
          "core.rkt"
