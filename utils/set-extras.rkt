@@ -29,4 +29,4 @@
 
 (define/contract (big-union ss)
   (list? . -> . list?)
-  (foldr set-union '() ss))
+  (remove-duplicates (flatten ss)))

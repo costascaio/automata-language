@@ -3,6 +3,8 @@
 
 (require "core.rkt"
          "image-builder.rkt"
+         "../nfa/image-builder.rkt"
+         "../nfa/subset-construction.rkt"
          "table-minimization.rkt"
          "../../utils/dot.rkt")
 
@@ -24,7 +26,7 @@
        (B : 0 -> B)
        (B : 1 -> B)))
 
-(define reverse (revert-delta (dfa-delta A)))
+;; (define reverse (revert-delta (dfa-delta A)))
 
 ;; (revert-delta (dfa-delta A))
 
@@ -41,7 +43,7 @@
                     #f
                     )) delta)) delta )))
 
-(test reverse)
+; (test reverse)
 ; generate a list of final states of each grouped transition 
 (define (solution grouped-transitions)
   (map (lambda (transitions)
@@ -52,8 +54,8 @@
   (map (lambda (group)
          (cons (car (first group)) (list (list-ref destiny-states (index-of grouped-transitions group))))) grouped-transitions))
 
-(define s (solution (test reverse)))
-(concat-grouped-transitions (test reverse) (solution (test reverse)) )
+;; (define s (solution (test reverse)))
+;; (concat-grouped-transitions (test reverse) (solution (test reverse)) )
 ;(dfa->pict T)
 ;(dfa->pict (minimize T))
 ;(dfa->pict (minimization T))
