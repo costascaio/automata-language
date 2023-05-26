@@ -24,4 +24,7 @@
 
 ;(dfa->pict (renaming foo))
 
-(nfa->pict M)
+; (nfa->dfa M)
+
+; (nfa->pict M)
+(dfa->pict (nfa->dfa M))

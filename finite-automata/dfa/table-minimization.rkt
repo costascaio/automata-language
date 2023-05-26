@@ -6,6 +6,7 @@
 (provide refinement-table
          minimize
          minimization
+         revert-dfa
          revert-delta)
 
 (require "../fa.rkt"
@@ -14,19 +15,28 @@
          "../nfa/image-builder.rkt"
          "image-builder.rkt"
          "../../utils/set-extras.rkt"
+         "../nfa/subset-construction.rkt"
          "../nfa/core.rkt")
 
 ;; revert a single transition
-(define (revert-transition transition)
-  (define origin (car (car transition)))
-  (define destiny (cdr transition))
-  (define symb (cdr (car transition)))
-  (cons (cons destiny symb) origin))
+(define (revert-transition t)
+  (match t
+    [(cons (cons o s) t) (cons (cons t s) o)]))
+
+;; combine transitions with same domain
+
+(define (combine-domain delta)
+  (hash->list
+    (foldr (lambda (t ac) (if (hash-has-key? ac (car t))
+                              (hash-set ac (car t) (list (cons (cdr t)
+                                                         (hash-ref ac (car t)))))
+                              (hash-set ac (car t) (list (cdr t)))))
+           (make-immutable-hash)
+           delta)))
 
 ;; revert all transitions of an automaton
 (define (revert-delta delta)
-  (map (lambda (transition)
-                (revert-transition transition)) delta))
+    (combine-domain (map revert-transition delta)))
 
 ;; make a reverse of a dfa and turn it into a nfa
 (define (revert-dfa dfa)
@@ -38,18 +48,9 @@
     (dfa-final dfa)
     (list (dfa-start dfa))))
 
-;; convert a nfa to a dfa
-(define (convert-nfa-dfa nfa)
-  (mk-dfa
-    (nfa-states nfa)
-    (nfa-sigma nfa)
-    (nfa-delta nfa)
-    (nfa-start nfa)
-    (nfa-final nfa)))
-
 (define (minimization fa)
-  (define step1 (convert-nfa-dfa (revert-dfa fa)))
-  (convert-nfa-dfa (revert-dfa step1)))
+  (define step1 (nfa->dfa (revert-dfa fa)))
+  (nfa->dfa (revert-dfa step1)))
 
 ;; generating the initial partition
 (define (init-partition m)

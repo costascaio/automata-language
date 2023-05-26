@@ -51,7 +51,7 @@
 
 (define (nfa->pict m)
   (define code (dot-code (nfa->dot m)))
-  (define dot-path (find-executable-path "/usr/bin/dot"))
+  (define dot-path (find-executable-path "/run/current-system/sw/bin/dot"))
   (define dot-file (make-temporary-file "~a.dv"))
   (define fig-file (make-temporary-file "~a.png"))
   (begin
