@@ -26,7 +26,9 @@
 
 (define reverse (revert-delta (dfa-delta A)))
 
-(revert-delta (dfa-delta A))
+;; (revert-delta (dfa-delta A))
+
+(minimization T)
 
 ; function that group all the transitions that has the same beginning state and same symbol
 (define (test delta)
